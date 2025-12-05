@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Science+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Day at the Cafe</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- p5.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
+</head>
+<body>
+
+  <header class="hero">
+    <h1>Day at the Cafe</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="about.html">About Me</a>
+    </nav>
+  </header>
+
+  <main class="grid">
+
+    <!-- Project Description -->
+    <section class="card">
+    <h2>Project Maker</h2>
+    <p>Jonathan Chung</p>
+    <h2>Project Partner</h2>
+    <p>Valentine</p>
+    <h2>Description Given</h2>
+    <p>Small wooden table with one wooden chair</p>
+    <p>Napkin atop the table</p>
+    <p>Mug on top of the napkin</p>
+    <p>Outdoors</p>
+    <p>Nice, sunny day</p>
+    <h2>Interpretation</h2>
+    <p>I imagined that this place is some sort of outdoor seating for a cafe. I put the table on a sidewalk, near the curb to give some depth.</p>
+    <p>To further show that it's outdoors on a nice day, I made a blue sky, a single cloud, and the sun. </p>
+    <p>I also made some steam coming out of the mug to show that it has a hot liquid inside.</p>
+    <p>I gave the table some wood grain to show that the table is wood beyond just its brown color.</p>
+    <h2>Reflection</h2>
+    <p>At several points in the assignment, I realized that just color or shape wasn't enough to precisely convey aspects of the environment. For example, I originally just made the table brown to show that it was wood, but it didn't communicate the texture of wood. It could just as easily have been just a brown table, which led me to giving the table a wood grain.</p>
+    <p>Another example would be the curb. I decided to split the curb in half to break it up rather than just having a gray block which didn't read properly as concrete.</p>
+    </section>
+
+    <section class="card sketch-card">
+    <div id="sketch-container"></div>
+    </section>
+
+    <!-- p5 Sketch -->
+  </main>
+
+  <footer>
+    <p>© 2025 Jonathan Chung</p>
+  </footer>
+
+
+  <!-- p5.js SKETCH SCRIPT -->
+  <script>
+    function setup() {
+  let canvas = createCanvas(400, 400);
+  canvas.parent("sketch-container");
+  angleMode(DEGREES)
+}
+
+function draw() {
+  background("rgb(173,206,236)");
+  
+  //clouds
+  push()
+  noStroke()
+  ellipse(60, 30, 30)
+  ellipse(80, 45, 40, 30)
+  ellipse(40, 50, 45, 35)
+  ellipse(60, 50, 45, 35)
+  pop()
+  
+  //sun
+  push()
+  noStroke()
+  fill("#F6EB28")
+  ellipse(350, 30, 50)
+  pop()
+  
+  //ground
+  push()
+  noStroke()
+  fill("#53403A")
+  rect(0, 200, 60, 200)
+  pop()
+  push()
+  fill("#605C5C")
+  noStroke()
+  rect(60, 200, 340, 200)
+  pop()
+  push()
+  noStroke()
+  fill("#4A4848")
+  rect(60, 200, 20, 200)
+  fill("rgb(81,78,78)")
+  rect(60, 280, 20, 2)
+  rect(80, 285, 400, 2)
+  pop()
+  
+  //chair
+  push()
+  fill(107, 53, 33)
+  rect(135, 110, 130, 80)
+  pop()
+  
+  //table base
+  push()
+  fill(66, 28, 7)
+  rect(90, 170, 220, 140)
+  rect(90, 310, 35, 90)
+  rect(275, 310, 35, 90)
+  pop()
+  
+  //table grain
+  push()
+  fill("rgb(71,42,19)")
+  rect(90, 170, 220, 20)
+  rect(90, 210, 220, 20)
+  rect(90, 250, 220, 20)
+  rect(90, 290, 220, 20)
+  
+  pop()
+  
+  //napkin
+  push()
+  translate(245, 210)
+  rotate(45)
+  rect(0, 0, 45)
+  pop()
+  
+    
+  //mug handle
+  push()
+  fill(178, 201, 237)
+  ellipse(265, 230, 30)
+  pop()
+  push()
+  fill(66, 28, 7)
+  ellipse(265, 230, 20)
+  pop()
+  
+  //mug body
+  push()
+  fill(178, 201, 237)
+  rect(225, 210, 40)
+  pop()
+  
+  //steam
+  push()
+  noFill()
+  stroke(255, 255, 255)
+  translate(250, 180)
+  rotate(90)
+  arc(10, 10, 15, 15, 0, 135)
+  arc(10, -7, 15, 15, 0, 125)
+  arc(10, 2, 15, 15, 0, 155)
+  pop()
+  
+  
+
+}
+  </script>
+</body>
+</html>

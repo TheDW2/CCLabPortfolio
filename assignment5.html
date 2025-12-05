@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Science+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Moire Bouncer</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- p5.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
+</head>
+<body>
+
+  <header class="hero">
+    <h1>Moire Bouncer</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="about.html">About Me</a>
+    </nav>
+  </header>
+
+  <main class="grid">
+
+    <!-- Project Description -->
+    <section class="card">
+    <h2>Process</h2>
+    <p>  From the beginning, I knew that I didn't want to try and make some kind of new optical illusion, but I still wanted to do something original. So I thought it might be fun to overlay optical illusions on top of each other. I started with the scintillating grid illusion which was pretty easy to make, but I thought the repeating striations of the scintillating grid would be perfect for a moire pattern. </p>
+    <p>  I'd also recently played a game that called back to the old screensaver that bounced around on your screen. I thought that might be fun to make, and the movement would help create the moire pattern. </p>
+    <p>
+At first I tried to use a for loop to draw a circle, erase a part of it, and then draw a smaller circle inside, etc until completetion, but I quickly learned that isn't how erase works. After messing around a bit more, I realized it would be way easier to use a bunch of thick stroke arcs instead. </p>
+    <p>Once I got it moving, I thought it still wasn't that fun to look at, so I thought I might as well throw in another one. I could've made a function to handle their variables individually, but I figured since I'm only making two it's just more work for something no one else would see. I also gave them 3D glasses colors because I thought it felt like a similar effect. With two objects, the arcs create at proper moire pattern...sometimes. I ran into an issue where they would run in the same direction at the same speed which didn't produce the effect. To solve this, I doubled the speed of one of them and called it a day.</p>
+    <h2>Application</h2>
+    <p>Honestly, this is really just a weird screensaver or some kind of strange website background. This doesn't really have any sort of useful or productive application.</p>
+    </section>
+
+    <section class="card sketch-card">
+    <div id="sketch-container"></div>
+    </section>
+
+    <!-- p5 Sketch -->
+  </main>
+
+  <footer>
+    <p>© 2025 Jonathan Chung</p>
+  </footer>
+
+
+  <!-- p5.js SKETCH SCRIPT -->
+  <script>
+    let circleX = 150;
+let circleY = 133;
+
+let circleX2 = 251;
+let circleY2 = 186;
+
+let isGoingForwardX;
+let isGoingForwardY;
+
+let isGoingForwardX2
+let isGoingForwardY2
+    function setup() {
+  let canvas = createCanvas(400, 400);
+  canvas.parent("sketch-container");
+  angleMode(DEGREES)
+}
+
+function draw() {
+  background(10);
+  drawLattice();
+  drawCircles();
+
+  if (isGoingForwardX) {
+    if (circleX <= 325) {
+      circleX++;
+    } else {
+      isGoingForwardX = false;
+    }
+  } else if (!isGoingForwardX){
+    if (circleX >= 75) {
+      circleX--;
+    } else {
+      isGoingForwardX = true;
+    }
+  }
+  
+  if (isGoingForwardY) {
+    if (circleY <= 325) {
+      circleY++;
+    } else {
+      isGoingForwardY = false;
+    }
+  } else if (!isGoingForwardY){
+    if (circleY >= 75) {
+      circleY--;
+    } else {
+      isGoingForwardY = true;
+    }
+  }
+  if (isGoingForwardX2) {
+    if (circleX2 <= 325) {
+      circleX2+=2;
+    } else {
+      isGoingForwardX2 = false;
+    }
+  } else if (!isGoingForwardX2){
+    if (circleX2 >= 75) {
+      circleX2-=2;
+    } else {
+      isGoingForwardX2 = true;
+    }
+  }
+  
+  if (isGoingForwardY2) {
+    if (circleY2 <= 325) {
+      circleY2+=2;
+    } else {
+      isGoingForwardY2 = false;
+    }
+  } else if (!isGoingForwardY2){
+    if (circleY2 >= 75) {
+      circleY2-=2;
+    } else {
+      isGoingForwardY2 = true;
+    }
+  }
+  push();
+  drawRotator(circleX, circleY, "rgb(255,11,94)");
+  pop();
+  
+  push();
+  drawRotator(circleX2, circleY2, "rgb(130,55,247)");
+  pop();
+}
+
+function drawLattice() {
+  for (let i = 5; i <= 400; i += 20) {
+    for (let j = 5; j <= 400; j += 20) {
+      push();
+      stroke("gray");
+      strokeWeight(5);
+      line(0, i, 400, i);
+      pop();
+    }
+    push();
+    stroke("gray");
+    strokeWeight(5);
+    line(i, 0, i, 400);
+    pop();
+  }
+}
+
+function drawCircles() {
+  for (let i = 5; i <= 400; i += 20) {
+    for (let j = 5; j <= 400; j += 20) {
+      push();
+      noStroke();
+      ellipse(i, j, 10);
+      pop();
+    }
+  }
+}
+
+function drawRotator(x, y, color) {
+  for (let i = 150; i >= 10; i -= 10) {
+    push();
+    noFill();
+    stroke(color);
+    strokeWeight(2);
+    arc(x, y, i, i, 0, 360, PIE);
+    pop();
+  }
+}
+  </script>
+</body>
+</html>

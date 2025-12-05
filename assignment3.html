@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Science+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Minimum Wage Machine</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- p5.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
+</head>
+<body>
+
+  <header class="hero">
+    <h1>Minimum Wage Machine</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="about.html">About Me</a>
+    </nav>
+  </header>
+
+  <main class="grid">
+
+    <!-- Project Description -->
+    <section class="card">
+    <h2>Brainstorming Ideas</h2>
+    <p>1. Based on Black Fall-Conroy's Minimum Wage Machine, click the screen at least once every ten seconds and watch as your money grows! If you fail to click, it'll spit out your total and you're clocked out.</p>
+    <p>2. Get a bag of randomized seeds with varying growth times. Watch as they sprout and bloom randomly.</p>
+    <p>3. Navigate a maze using various control schemes. Using a mouse, WASD controls, arrows keys, only being able to input one thing at a time, only being able to move down and left, feel the constraints that controls place on your ability to move.</p>
+    <h2>Process</h2>
+    <p>While this is based off of an existing piece of art, it also comes from my experience working minimum wage food service jobs. Even in states that pay more than the federal minimum wage, the money feels like nothing. This piece is soul sucking on purpose. It captures the mindless drag of work and how violating it feels when you're forced to reckon with converting your time directly into money. That money is then used to buy your needs (a McChicken in this case), and the cycle continues. You would have to work a little over 11 minutes and 16 seconds just to get a single McChicken. That's absolutely absurd.</p>
+    <p>I liked the ideas in the other two, especially with the farming idea. I liked the idea of thinking through natural time and letting the plants dictate time rather than a number. The speedrun maze idea was interesting from a disability theory perspective. Messing with your controls and seeing how different controls affects how long you expect things to take is another way of thinking about time and maps onto the chrononormativity we experience in day to day life. In the end though, I chose to make my own version of the Minimum Wage Machine because it felt much more personal to me. In just New York alone, over
+      <a href="https://www.epi.org/low-wage-workforce" target="_blank" rel="noopener noreferrer">a million people make less than $17 an hour.</a> 
+    </p>
+    <p>It is unbelievable the amount of surplus we have as a country, and yet people are still barely a step away from literal slavery. It's unbelievable. And yet, even knowing that and having calculated my wages while still at work, forcing myself to sit down, do the math, and experience minimum wage at this stripped down level is undeniably horrific.</p>
+    </section>
+
+    <section class="card sketch-card">
+    <div id="sketch-container"></div>
+    </section>
+
+    <!-- p5 Sketch -->
+  </main>
+
+  <footer>
+    <p>© 2025 Jonathan Chung</p>
+  </footer>
+
+
+  <!-- p5.js SKETCH SCRIPT -->
+  <script>
+    let startTime = 0;
+let runTime = 0;
+let workTimer = 0;
+let buttonTimer = 0;
+
+let wallet = 0;
+let clockedIn = false;
+let hungry = true;
+let buttonClicked = false;
+let eatText;
+let middleText = "Click to clock in";
+    function setup() {
+  let canvas = createCanvas(400, 400);
+  canvas.parent("sketch-container");
+  angleMode(DEGREES)
+}
+
+function draw() {
+  background(175);
+
+  //wallet
+  push();
+  textSize(36);
+  fill("rgb(17,99,17)");
+  text("$" + wallet.toFixed(2), 10, 40);
+  pop();
+
+  if (clockedIn) {
+    runTime += deltaTime;
+
+    middleText = Math.floor((workTimer / 1000) % 60);
+    workTimer -= deltaTime;
+
+    push();
+    textSize(36);
+    fill(255, 0, 0);
+    text(middleText + " seconds ", width / 2 - 100, 210);
+    pop();
+
+    if (workTimer <= 0) {
+      //NY minimum wage converted into milliseconds
+      wallet += runTime * 0.00000458333;
+      clockedIn = false;
+    }
+  } else {
+    runTime = 0;
+    snapshotTime = millis / 1000;
+    middleText = "Click to clock in";
+    // middle start text
+    push();
+    textSize(36);
+    fill(255, 0, 0);
+    text(middleText, 75, 210);
+    pop();
+  }
+    if (buttonClicked)
+      {
+        push();
+        textSize(24);
+        fill("rgb(165,18,18)")
+        text(eatText, textX, 289)
+        pop();
+        buttonTimer += deltaTime
+        if (buttonTimer >= 5000)
+          {
+            eatText = ""
+            buttonTimer = 0
+            buttonClicked = false
+          }
+      }
+
+  //Shift Timer
+  push();
+  textSize(18);
+  text(
+    "Clocked in for: " +
+      Math.floor((runTime / (1000 * 60 * 60)) % 60) +
+      " hrs " +
+      Math.floor((runTime / (1000 * 60)) % 60) +
+      " mins " +
+      Math.floor((runTime / 1000) % 60) +
+      " secs",
+    10,
+    390
+  );
+  pop();
+
+  //McChicken
+  push();
+  fill("rgb(255,200,105)");
+  ellipse(350, 46, 60, 20);
+  pop();
+
+  push();
+  fill("#C2803D");
+  ellipse(350, 40, 70, 15);
+  pop();
+
+  push();
+  fill("rgb(163,240,163)");
+  rect(350, 30, 9, 6);
+  rect(346, 28, 9, 6);
+  rect(355, 33, 9, 6);
+  rect(357, 29, 9, 6);
+  rect(333, 33, 9, 6);
+  rect(339, 27, 9, 6);
+  rect(365, 26, 9, 6);
+  rect(351, 33, 9, 6);
+  rect(341, 32, 9, 6);
+  rect(329, 26, 9, 6);
+  rect(360, 32, 9, 6);
+  rect(370, 29, 9, 6);
+  rect(337, 27, 9, 6);
+  rect(368, 32, 9, 6);
+  rect(323, 32, 9, 6);
+  rect(326, 29, 9, 6);
+  rect(320, 27, 9, 6);
+  rect(330, 32, 9, 6);
+  pop();
+
+  push();
+  fill("rgb(241,238,228)");
+  ellipse(339, 33, 20, 8);
+  ellipse(363, 33, 18, 6);
+  pop();
+
+  push();
+  fill("rgb(255,200,105)");
+  ellipse(350, 23, 60, 20);
+  pop();
+
+  //buy button
+  push();
+  fill("#FFBC0E");
+  rect(305, 58, 85, 45);
+  pop();
+
+  push();
+  textSize(14);
+  text("McChicken \n    $3.10", 312, 75);
+  pop();
+}
+
+function mouseClicked() {
+  if (!clockedIn) {
+    clockedIn = true;
+    workTimer = 10000;
+  } else {
+    workTimer = 10000;
+  }
+
+  if (mouseX >= 305 && mouseX <= 388 && mouseY >= 58 && mouseY <= 101) {
+    buttonClicked = true;
+    if (wallet >= 3.1) {
+      eatText = "nom, nom, nom";
+      textX = 110
+      hungry = false;
+      wallet -= 3.1;
+    } else {
+      eatText = "You don't have enough money \nGet to work";
+      textX = 50
+    }
+  }
+}
+  </script>
+</body>
+</html>

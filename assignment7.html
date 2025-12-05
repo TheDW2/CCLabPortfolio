@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Science+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Endless Pursuit</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- p5.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
+</head>
+<body>
+
+  <header class="hero">
+    <h1>Endless Pursuit</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="about.html">About Me</a>
+    </nav>
+  </header>
+
+  <main class="grid">
+
+    <!-- Project Description -->
+    <section class="card">
+    <h2>Reflection</h2>
+    <p>I wanted to make a top-down RPG game where the main gameplay loop was walking around, talking to NPCs who would give you quests to complete around the world. Some of these quests might require you to have certain stats, items, or simply to have talked to another NPC. I wanted to set the game in my hometown of Fremont to fight against the idealized perception of what it's like to live in the Silicon Valley.</p>
+    <p>In the end, my project was way too ambitious for the time that I had. Or rather, because of how busy I ended up being from my other courses and other obligations I was simply unable to complete much of what I wanted.</p>
+    <p>At first I tried to use a library called p5play. It did a lot of what I wanted, including sprites, physics, collision detection, and more. I worked for about 8 hours using this library and then began to test, only to find an unfixable bug with rendering things on the canvas. My research online only yielded other users suffering from the same bug. They concluded that the problem lay with the library itself, and that there was no solution that didn't require going in and fixing the actual library. Exasperated, I tossed out all my work and started anew with just p5.</p>
+    <p>This started a fresh set of horrors. Programming such rudimentary game logic like collision detection, impassable walls, dialogue boxes, and more ended up being an absolute nightmare. I don't consider myself a gameplay programmer. I program out of need, not out of love. Implementing anything that I wanted to do ended up being hours and hours of struggle that could have been avoided if I just used an actual game engine.</p>
+    <p>An hour before the due date I still hadn't gotten my NPCs to work. I gave up. I scrapped all the NPC code, commenting it all out so that you could at least see the traces of my suffering. I then came up with a much easier concept, completely divorced from what I wanted, but still on theme I suppose.</p>
+    <p>The quest in this game is incompletable, and this project lays incomplete as well.</p>
+    </section>
+
+    <section class="card sketch-card">
+    <div id="sketch-container"></div>
+    </section>
+
+    <!-- p5 Sketch -->
+  </main>
+
+  <footer>
+    <p>© 2025 Jonathan Chung</p>
+  </footer>
+
+
+  <!-- p5.js SKETCH SCRIPT -->
+  <script>
+    class Player {
+  constructor(
+    name,
+    x,
+    y,
+    playerWidth,
+    playerHeight,
+    speed,
+    strength,
+    intelligence,
+    constitution,
+    charisma,
+    walls,
+    //interactionPossible
+  ) {
+    this.name = name;
+    this.x = x;
+    this.y = y;
+    this.playerWidth = playerWidth;
+    this.playerHeight = playerHeight;
+    this.speed = speed;
+    this.strength = strength;
+    this.intelligence = intelligence;
+    this.constitution = constitution;
+    this.charisma = charisma;
+    this.walls = walls;
+    //this.interactionPossible = false;
+  }
+
+  checkCollision(newX, newY) {
+    for (let i = 0; i < walls.length; i++) {
+      let currentWall = walls[i];
+
+      // Check if inbetween left right
+      if (
+        newX + this.playerWidth / 2 >
+          currentWall.x - currentWall.colliderWidth / 2 &&
+        newX - this.playerWidth / 2 <
+          currentWall.x + currentWall.colliderWidth / 2
+      ) {
+        // Check if inbetween top bottom
+        if (
+          newY + this.playerHeight / 2 >
+            currentWall.y - currentWall.colliderHeight / 2 &&
+          newY - this.playerHeight / 2 <
+            currentWall.y + currentWall.colliderHeight / 2
+        ) {
+          //returns true if not passable, returns the collider if it is passable
+          if (currentWall.passable == false)
+            {
+              return true;
+            }
+          else
+            {
+              //return currentWall.name;
+              currentWall.collected = true;
+              return;
+            }
+        }
+      }
+    }
+    return false;
+  }
+
+  playerMove() {
+    let newX = this.x; 
+    let newY = this.y;
+
+
+    if (keyIsDown(LEFT_ARROW) || keyIsDown(65)) {
+      newX -= this.speed;
+      if (!this.checkCollision(newX, this.y)) {
+        this.x = newX;
+        //this.interactionPossible = false;
+      }
+      //this only goes off if the collider is passable
+      else if (this.checkCollision(newX, this.y) instanceof Collider)
+        {
+          this.x = newX
+          //this.interactionPossible = true;
+        }
+    }
+
+
+    if (keyIsDown(RIGHT_ARROW) || keyIsDown(68)) {
+      newX += this.speed;
+      if (!this.checkCollision(newX, this.y)) {
+        this.x = newX;
+        this.interactionPossible = false;
+      }
+      else if (this.checkCollision(newX, this.y) instanceof Collider)
+        {
+          this.x = newX
+          //this.interactionPossible = true;
+        }
+    }
+
+
+    if (keyIsDown(UP_ARROW) || keyIsDown(87)) {
+      newY -= this.speed;
+      if (!this.checkCollision(this.x, newY)) {
+        this.y = newY;
+        //this.interactionPossible = false;
+      }
+      else if (this.checkCollision(this.x, newY) instanceof Collider)
+        {
+          this.y = newY
+          //this.interactionPossible = true;
+        }
+    }
+
+    if (keyIsDown(DOWN_ARROW) || keyIsDown(83)) {
+      newY += this.speed;
+      if (!this.checkCollision(this.x, newY)) {
+        this.y = newY;
+        //this.interactionPossible = false;
+      }
+      else if (this.checkCollision(this.x, newY) instanceof Collider)
+        {
+          this.y = newY
+          //this.interactionPossible = true;
+        }
+    }
+  }
+  playerSprint() {
+    if (keyIsDown(16)) {
+      player.speed = 4;
+    } else {
+      player.speed = 2;
+    }
+  }
+  
+  showPlayer()
+  {
+    push()
+    fill("green")
+    ellipse(player.x, player.y, 10);
+    pop()
+  }
+}
+
+//class NPC {
+  //constructor (name, dialogueDict)
+  //{
+    //this.name = name;
+    //this.dialogueDict = dialogueDict;
+  //}
+  
+  
+//}
+
+class Collider {
+  constructor(x, y, colliderWidth, colliderHeight, passable) {
+    this.x = x;
+    this.y = y;
+    this.colliderWidth = colliderWidth;
+    this.colliderHeight = colliderHeight;
+    this.passable = passable;
+    //this.name = "N/A";
+    this.collected = false;
+    this.fillR = random(255)
+    this.fillG = random(255)
+    this.fillB = random(255)
+  }
+
+  showRectCollider() {
+    if (!this.collected)
+      {
+        push()
+        fill(this.fillR, this.fillG, this.fillB)
+        rect(this.x, this.y, this.colliderWidth, this.colliderHeight);
+        pop()
+      }
+    
+  }
+  
+  showEllipseCollider(){
+    if (!this.collected)
+      {
+        ellipse(this.x, this.y, this.colliderWidth, this.colliderHeight);
+      }
+  }
+}
+
+class DialogueManager {
+  constructor(textboxWidth, textboxHeight, dialogueSize) {
+    this.textboxWidth = textboxWidth;
+    this.textboxHeight = textboxHeight;
+    this.dialogueSize = dialogueSize;
+    this.textQueue = [];
+    this.currentTextIndex = 0;
+    this.typingSpeed = 25;
+    this.lastTypedTime = 0;
+  }
+
+  showDialogueBox() {
+    rect(
+      canvasWidth / 2,
+      canvasHeight - 100,
+      this.textboxWidth,
+      this.textboxHeight
+    );
+  }
+  
+  showDialogue()
+  {
+  push();
+  rectMode(CORNERS);
+  textSize(dialogueManager.dialogueSize);
+  textAlign(LEFT);
+  textWrap(WORD);
+  this.typewriterEffect();
+  
+  let displayedText = "";
+  for (let i = 0; i < this.currentTextIndex; i++) {
+    displayedText += this.textQueue[0][i];
+  }
+    
+  text(
+    displayedText,
+    30,
+    canvasHeight/4 * 3 + 30,
+    canvasWidth - 30
+  );
+  pop();
+  }
+  
+  typewriterEffect()
+  {
+  //calculates when to add the next character to the displayed text
+  if (millis() - this.lastTypedTime > this.typingSpeed && this.currentTextIndex < this.textQueue[0].length) {
+    this.lastTypedTime = millis();
+    this.currentTextIndex++;
+  }
+  }
+}
+
+class QuestManager {
+  
+  constructor()
+  {
+    this.questLog = [];
+    this.questDict = {
+      //used to check if the quest is active
+      //mainQuest : [true, "Succeed"],
+      //attendClass : [false, "Attend Class - School"],
+      //bobaStudy : [false, "Study at Boba Shop"]
+      GetTechSkills : [true, "Get Tech Skills"],
+      GetDesignSkills : [true, "Get Design Skills"],
+      ReadReadRead : [true, "Read, Read, Read"],
+      DontStarve : [true, "Don't Starve"]
+    }
+  }
+  
+  addQuest(questName)
+  {
+    if (this.questDict[questName] && this.questDict[questName][0] == true) {
+        this.questLog.push(this.questDict[questName][1]);
+    } else {
+        console.error(`Quest "${questName}" does not exist or is not active.`);
+    }
+  }
+  
+  showQuests()
+  {
+    for (let i = 0; i < this.questLog.length; i++)
+      {
+        push()
+        fill("white")
+        textSize(42)
+        textAlign(LEFT);
+        text(this.questLog[i], 15, 55 + i*60)
+        pop()
+      }
+  }
+  
+  activateQuest(questName)
+  {
+    if (this.questDict[questName] && this.questDict[questName][0] == false)
+      {
+        this.questDict[questName][0] = true;
+      }
+  }
+}
+
+let player;
+let walls = [];
+let npcColliders = {};
+let canvasWidth;
+let canvasHeight;
+let testWall //kumarIntRange
+let interactionPossible;
+let scene = "Menu";
+let timer = 20000;
+let timerText = "";
+let endText = "You should've tried harder"
+    function setup() {
+      capWindowSize();
+  let canvas = createCanvas(canvasWidth, canvasHeight);
+  canvas.parent("sketch-container");
+  angleMode(DEGREES)
+  rectMode(CENTER);
+  ellipseMode(CENTER);
+  textAlign(CENTER);
+  angleMode(DEGREES);
+  dialogueManager = new DialogueManager(canvasWidth+20, canvasHeight/4, 32);
+  questManager = new QuestManager()
+  
+  
+  //let kumarDialogueDict = {
+    //neverMet: ["Welcome in!", "Take a seat when you're ready to learn."],
+    //studying: ["Please return to your sear", "Class will get out soon", "Why not talk to your classmates?"]
+  //}
+  
+  testWall = new Collider(300, 300, 100, 100, false);
+  wall2 = new Collider(100, 100, 250, 100, false);
+  wall3 = new Collider(500, 123, 100, 30, false);
+  wall4 = new Collider(700, 80, 220, 400, false);
+  wall5 = new Collider(-100, 0, 100, 300, false);
+  wall6 = new Collider(-300, -100, 123, 300, false);
+  wall7 = new Collider(200, 400, 1000, 50, false);
+  wall8 = new Collider(150, -300, 120, 350, false);
+  wall9 = new Collider(543, -80, 92, 300, false);
+  wall10 = new Collider(-200, 340, 54, 499, false);
+  wall11 = new Collider(-500, 230, 350, 122, false);
+  wall12 = new Collider(-700, 190, 30, 438, false);
+  wall13 = new Collider(-1100, 0, 30, 10000, false);
+  wall14 = new Collider(1100, 0, 30, 10000, false);
+  wall15 = new Collider(0, 1100, 10000, 100, false);
+  wall16 = new Collider(-0, -1100, 10000, 30, false);
+  wall17 = new Collider(-900, -150, 400, 300, false);
+  wall18 = new Collider(-800, 500, 700, 100, false);
+  wall19 = new Collider(-400, 1000, 500, 600, false);
+  wall20 = new Collider(0, 850, 400, 30, false);
+  wall21 = new Collider(950, -800, 328, 1530, false);
+  wall22 = new Collider(800, 650, 656, 213, false);
+  wall23 = new Collider(374, 743, 200, 593, false);
+  wall24 = new Collider(0, -640, 500, 500, false);
+  wall25 = new Collider(-450, -600, 439, 231, false);
+  wall26 = new Collider(689, -485, 600, 500, false);
+  techSkills = new Collider(1000, 100, 20, 20, true);
+  designSkills = new Collider(-1000, 150, 20, 20, true);
+  books = new Collider(50, 1000, 20, 20, true);
+  food = new Collider(0, -1000, 20, 20, true);
+  //kumarIntRange = new Collider(100, 100, 30, 30, true);
+  //kumarIntRange.name = "Kumar"
+  //walls.push(kumarIntRange);
+  walls.push(testWall);
+  walls.push(wall2, wall3, wall4, wall5, wall6, wall7, wall8, wall9, wall10, wall11, wall12, wall13, wall14, wall15, wall16, wall17, wall18, wall19, wall20, wall21, wall22, wall23, wall24, wall25, wall26);
+  walls.push(techSkills);
+  walls.push(designSkills);
+  walls.push(books);
+  walls.push(food);
+  
+  
+  player = new Player("Bob", 200, 200, 10, 10, 2, 10, 10, walls);
+  //teacher = new NPC("Ms. Kumar", kumarDialogueDict);
+  
+  
+  dialogueManager.textQueue.push("So. You decided to be born.")
+  dialogueManager.textQueue.push("Great news! It's one of the best times to be alive!")
+  dialogueManager.textQueue.push("Bad news! You're poor and for some reason you decided to be a designer in tech.")
+  dialogueManager.textQueue.push("Good luck keeping up!")
+  
+  //add main quest
+  //questManager.addQuest("mainQuest")
+  questManager.addQuest("GetTechSkills")
+  questManager.addQuest("GetDesignSkills")
+  questManager.addQuest("ReadReadRead")
+  questManager.addQuest("DontStarve")
+  
+  //assign interactable colliders to NPCs; I know this is horrible practice but I'm out of time
+  //npcColliders.teacher = kumarIntRange;
+}
+
+function draw() {
+  
+  switch (scene) {
+    case "Menu":
+      background(10)
+      push()
+      textAlign(CENTER)
+      textSize(96)
+      fill("rgb(122,5,5)")
+      text("Endless Pursuit", canvasWidth/2, 200)
+      pop()
+    push();
+      noStroke()
+  fill("#0C7A14");
+  rect(canvasWidth/2, canvasHeight/2, 600, 100);
+      
+  pop();
+      push()
+      textAlign(CENTER)
+      textSize(96)
+      fill("rgb(13,35,92)")
+      text("Space to Play", canvasWidth/2, canvasHeight/2 + 30)
+      pop()
+      break;
+      
+    case "Main":
+      background(50);
+  
+  //if (player.interactionPossible != interactionPossible)
+    //{
+      //interactionPossible = player.interactionPossible;
+    //}
+
+  //camera logic
+  push()
+  let camX = player.x - width / 2;
+  let camY = player.y - height / 2;
+  translate(-camX, -camY);
+
+  player.playerMove();
+  player.playerSprint();
+  player.showPlayer();
+  
+  //environment stuff under this comment
+  testWall.showRectCollider();
+  wall2.showRectCollider();
+  wall3.showRectCollider();
+  wall4.showRectCollider();
+  wall5.showRectCollider();
+  wall6.showRectCollider();
+  wall7.showRectCollider();
+  wall8.showRectCollider();
+  wall9.showRectCollider();
+  wall10.showRectCollider();
+  wall11.showRectCollider();
+  wall12.showRectCollider();
+  wall13.showRectCollider();
+  wall14.showRectCollider();
+  wall15.showRectCollider();
+  wall16.showRectCollider();
+  wall17.showRectCollider();
+  wall18.showRectCollider();
+  wall19.showRectCollider();
+  wall20.showRectCollider();
+  wall21.showRectCollider();
+  wall22.showRectCollider();
+  wall23.showRectCollider();
+  wall24.showRectCollider();
+  wall25.showRectCollider();
+  wall26.showRectCollider();
+  techSkills.showEllipseCollider();
+  designSkills.showEllipseCollider();
+  books.showRectCollider();
+  food.showEllipseCollider();
+  
+  //kumarIntRange.showEllipseCollider();
+  
+  pop()
+  
+
+  //UI stuff under this comment
+  
+  //display dialogue only when there is dialogue left in the textQueue
+  if (dialogueManager.textQueue.length > 0)
+    {
+      push();
+      //cancel translate from camera logic
+      resetMatrix();
+      dialogueManager.showDialogueBox();
+      dialogueManager.showDialogue();
+      pop();
+    }
+  push();
+  resetMatrix();
+  
+  timerText = Math.floor((timer / 1000) % 60);
+  timer -= deltaTime;
+  questManager.showQuests();
+  
+  textAlign(LEFT);
+  textSize(42);
+  fill("red")
+  text(timerText, canvasWidth - 60, 50)
+  
+  if (timer <= 0)
+    {
+      scene = "Lose";
+    }
+  
+  
+  
+  if (techSkills.collected)
+    {
+      noStroke()
+      fill("black")
+      rect(60, 40, 500, 10)
+    }
+  if (designSkills.collected)
+    {
+      noStroke()
+      fill("black")
+      rect(60, 100, 600, 10)
+    }
+  if (books.collected)
+    {
+      noStroke()
+      fill("black")
+      rect(60, 160, 650, 10)
+    }
+  if (food.collected)
+    {
+      noStroke()
+      fill("black")
+      rect(60, 220, 400, 10)
+    }
+  pop();
+  if (techSkills.collected && designSkills.collected && books.collected && food.collected)
+    {
+      scene = "End" 
+    }
+      break;
+    
+    case "End":
+      background(0);
+      push()
+      textAlign(CENTER)
+      textSize(50)
+      fill("white")
+      text("How did you win? \nYou're not supposed to win.", canvasWidth/2, canvasHeight/2 - 50)
+      pop()
+      break;
+      
+    case "Lose":
+      background(0)
+      push()
+      textAlign(CENTER)
+      textSize(50)
+      fill("white")
+      text(endText, canvasWidth/2, canvasHeight/2 - 50)
+      pop()
+      break;
+  }
+  
+  
+  
+  
+
+}
+
+function keyPressed()
+{
+  //when space is pressed and there is dialogue, advance dialogue
+  //if (keyCode == 32 && interactionPossible)
+    //{
+      
+    //}
+  
+  if (keyCode == 32 && dialogueManager.textQueue.length > 0)
+    {
+      dialogueManager.textQueue.shift()
+      dialogueManager.currentTextIndex = 0;
+    }
+  
+  if (keyCode == 32 && scene == "Menu")
+  {
+    scene = "Main";
+  }
+  
+  if (keyCode == 32 && scene == "Lose")
+    {
+      endText = "That's it.\n That's the end."
+    }
+    
+    //prevent default browser commands
+    return false;
+}
+
+
+function windowResized() {
+  resizeCanvas(canvasWidth, canvasHeight);
+}
+
+function capWindowSize() {
+  if (windowWidth <= 1920) {
+    canvasWidth = windowWidth;
+  } else {
+    canvasWidth = 1920;
+  }
+  if (windowHeight <= 1080) {
+    canvasHeight = windowHeight;
+  } else {
+    canvasHeight = 1080;
+  }
+}
+  </script>
+</body>
+</html>
